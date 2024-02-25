@@ -18,6 +18,9 @@ public class Member extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
+    @OneToMany(mappedBy = "member")
+    private List<Reservation> reservations;
+
     private String email;
     private String password;
     private String name;
@@ -25,6 +28,5 @@ public class Member extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
 
 }
