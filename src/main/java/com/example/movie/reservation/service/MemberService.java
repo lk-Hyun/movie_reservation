@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -43,7 +45,19 @@ public class MemberService {
 
     };
 
-    public boolean changePassword() { return true; };
+    public boolean changePassword(MemberSignOutDto dto) throws Exception {
+        Member member = memberRepository.findByEmail(dto.email());
+
+        if (!dto.password().equals(dto.cPassword())) {
+            throw new Exception("password is not equals");
+        }
+
+        if (member.getPassword().equals(passwordEncoder.encode(dto.password()))) {
+            member.updatePassword(passwordEncoder, dto.rawPassword());
+        }
+
+        return true;
+    };
 
     public Member getMember(Long id) { return memberRepository.findById(id).get(); };
 }
