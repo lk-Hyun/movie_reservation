@@ -1,8 +1,11 @@
 package com.example.movie.reservation.service;
 
+import com.example.movie.reservation.domain.Member;
 import com.example.movie.reservation.repository.MemberRepository;
+import com.example.movie.reservation.request.MemberSignUpDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +16,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public void join() {};
+    public void join(MemberSignUpDto dto) throws Exception {
+        if (memberRepository.existsByEmail(dto.email())) {
+            throw new Exception("Member Email is already Exists");
+        }
 
+        Member member = dto.toEntity();
+        member.encodePassword(passwordEncoder);
+
+        memberRepository.save(member);
+    };
+
+    public void signOut() {};
+
+    public boolean changePassword() { return true; };
+
+    public Member getMember(Long id) { return memberRepository.findById(id).get(); };
 }
