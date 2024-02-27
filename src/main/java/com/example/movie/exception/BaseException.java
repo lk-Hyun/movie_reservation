@@ -1,6 +1,6 @@
 package com.example.movie.exception;
 
-public abstract class BaseException {
+public abstract class BaseException extends RuntimeException {
 
-    public abstract BaseExceptionType baseExceptionType();
+    public abstract BaseExceptionType getExceptionType();
 }

@@ -1,5 +1,7 @@
 package com.example.movie.reservation.service;
 
+import com.example.movie.exception.member.MemberException;
+import com.example.movie.exception.member.MemberExceptionType;
 import com.example.movie.reservation.domain.Member;
 import com.example.movie.reservation.repository.MemberRepository;
 import com.example.movie.reservation.request.MemberSignOutDto;
@@ -21,9 +23,9 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void join(MemberSignUpDto dto) throws Exception {
+    public void join(MemberSignUpDto dto) {
         if (memberRepository.existsByEmail(dto.email())) {
-            throw new Exception("Member Email is already Exists");
+            throw new MemberException(MemberExceptionType.ALREADY_EXIST_EMAIL);
         }
 
         Member member = dto.toEntity();
@@ -37,24 +39,26 @@ public class MemberService {
         Member member = memberRepository.findByEmail(dto.email());
 
         if(!dto.password().equals(dto.cPassword())){
-            throw new Exception("password is not equals");
+            throw new MemberException(MemberExceptionType.PASSWORD_NOT_EQUAL);
         }
-        if(member.getPassword().equals(passwordEncoder.encode(dto.password()))){
-           memberRepository.delete(member);
+        if(!member.getPassword().equals(passwordEncoder.encode(dto.password()))){
+            throw new MemberException(MemberExceptionType.WRONG_PASSWORD);
         }
 
+        memberRepository.delete(member);
     };
 
     public boolean changePassword(MemberSignOutDto dto) throws Exception {
         Member member = memberRepository.findByEmail(dto.email());
 
-        if (!dto.password().equals(dto.cPassword())) {
-            throw new Exception("password is not equals");
+        if(!dto.password().equals(dto.cPassword())){
+            throw new MemberException(MemberExceptionType.PASSWORD_NOT_EQUAL);
+        }
+        if(!member.getPassword().equals(passwordEncoder.encode(dto.password()))){
+            throw new MemberException(MemberExceptionType.WRONG_PASSWORD);
         }
 
-        if (member.getPassword().equals(passwordEncoder.encode(dto.password()))) {
-            member.updatePassword(passwordEncoder, dto.rawPassword());
-        }
+        member.updatePassword(passwordEncoder, dto.rawPassword());
 
         return true;
     };
