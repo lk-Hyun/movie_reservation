@@ -19,7 +19,6 @@ public record MemberSignOutDto (
     @NotNull @Size(min = 8, max = 15,  message = "비밀번호는 최소 8글자 이상 최대 16글자 이하로 작성해야 합니다.")
     String rawPassword
 
-)
-{
+) {
 
 }
