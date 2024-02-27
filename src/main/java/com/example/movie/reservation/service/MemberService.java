@@ -32,7 +32,18 @@ public class MemberService {
         memberRepository.save(member);
     };
 
-    public void signOut() {};
+   //탈퇴
+    public void signOut(MemberSignOutDto dto) throws Exception {
+        Member member = memberRepository.findByEmail(dto.email());
+
+        if(!dto.password().equals(dto.cPassword())){
+            throw new Exception("password is not equals");
+        }
+        if(member.getPassword().equals(passwordEncoder.encode(dto.password()))){
+           memberRepository.delete(member);
+        }
+
+    };
 
     public boolean changePassword(MemberSignOutDto dto) throws Exception {
         Member member = memberRepository.findByEmail(dto.email());
