@@ -2,6 +2,7 @@ package com.example.movie.reservation.service;
 
 import com.example.movie.reservation.domain.Member;
 import com.example.movie.reservation.repository.MemberRepository;
+import com.example.movie.reservation.request.MemberSignOutDto;
 import com.example.movie.reservation.request.MemberSignUpDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,18 @@ public class MemberService {
         memberRepository.save(member);
     };
 
-    public void signOut() {};
+   //탈퇴
+    public void signOut(MemberSignOutDto dto) throws Exception {
+        Member member = memberRepository.findByEmail(dto.email());
+
+        if(!dto.password().equals(dto.cPassword())){
+            throw new Exception("password is not equals");
+        }
+        if(member.getPassword().equals(passwordEncoder.encode(dto.password()))){
+           memberRepository.delete(member);
+        }
+
+    };
 
     public boolean changePassword() { return true; };
 
