@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234#
+      MYSQL_DATABASE: movie_reservation
+#      MYSQL_USER: user
+#      MYSQL_PASSWORD: password
+    ports:
+      - "43306:3306"
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-character-set-client-handshake
+    volumes:
+      - ./data:/var/lib/mysql
+
